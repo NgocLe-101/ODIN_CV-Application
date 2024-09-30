@@ -1,35 +1,86 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
+import LivePreviewPanel from "./Components/LivePreviewPanel";
+// import PersonalInfoPanel from "./Components/PersonalInfoPanel";
+import {
+  PersonalInfoPanel,
+  EducationInfoPanel,
+  ExperienceInfoPanel,
+} from "./Components/InputPanel";
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+function idToKey(id) {
+  return id
+    .split("-")
+    .reduce((prev, curr) => prev + curr[0].toUpperCase() + curr.slice(1));
 }
 
-export default App
+function cleanInfo(info) {
+  return Object.keys(info).reduce((acc, key) => {
+    return { ...acc, [idToKey(key)]: info[key] };
+  }, {});
+}
+
+function App() {
+  const [personalInfo, setPersonalInfo] = useState({
+    name: "John Doe",
+    email: "johndoe@mail.uk.com",
+    tel: "123456789",
+    location: "London, UK",
+  });
+  const [educationInfoList, setEducationInfoList] = useState([
+    {
+      school: "University of London",
+      location: "London, UK",
+      fieldOfStudy: "Computer Science",
+      specialisation: "Software Engineering",
+      from: "2010",
+      to: "2014",
+      grade: "3.8",
+    },
+  ]);
+  const [experienceInfoList, setExperienceInfoList] = useState([
+    {
+      companyName: "Google",
+      location: "Mountain View, CA",
+      jobTitle: "Software Engineer",
+      from: "2014",
+      to: "2016",
+      description: "Worked on the Google search engine project.",
+    },
+  ]);
+  const handlePersonalInfoChange = () => {
+    const panel = document.querySelector(".panel.personal-details");
+    const newPersonalInfo = {
+      name: panel.querySelector("#name input").value,
+      email: panel.querySelector("#email input").value,
+      tel: panel.querySelector("#phone input").value,
+      location: panel.querySelector("#location input").value,
+    };
+    console.log(panel);
+    setPersonalInfo(newPersonalInfo);
+  };
+  const handleEducationListChange = (newEducationInfoList) => {
+    setEducationInfoList(newEducationInfoList.map((item) => cleanInfo(item)));
+  };
+  const handleExperienceListChange = (newExperienceInfoList) => {
+    setExperienceInfoList(newExperienceInfoList.map((item) => cleanInfo(item)));
+  };
+  return (
+    <div className="container">
+      <div className="edit-section section">
+        <PersonalInfoPanel updateUI={handlePersonalInfoChange} />
+        <EducationInfoPanel updateUI={handleEducationListChange} />
+        <ExperienceInfoPanel updateUI={handleExperienceListChange} />
+      </div>
+      <div className="live-preview-section section">
+        <LivePreviewPanel
+          personalInfo={personalInfo}
+          educationInfoList={educationInfoList}
+          experienceInfoList={experienceInfoList}
+        />
+      </div>
+    </div>
+  );
+}
+
+export default App;

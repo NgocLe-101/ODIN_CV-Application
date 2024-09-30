@@ -1,0 +1,19 @@
+.stacking-panel-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-auto-rows: 2rem;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.stacking-info-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: var(--color-white, #4817);
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
